@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">MessageApp</string>
+
+    <string name="app_logo">LOGO</string>
+
+    <!-- Log in Activity -->
+
+    <!-- Text Input E-mail -->
+    <string name="text_input_email">Digite seu e-mail</string>
+    <!-- Text Input Password -->
+    <string name="text_input_password">Digite sua senha</string>
+
+    <!-- Button Log in -->
+    <string name="btn_login">Log in</string>
+
+    <!-- Tex Sign Up -->
+    <string name="text_not_have_account">Ainda não tem uma conta?</string>
+    <string name="text_sign_up">Cadastre-se</string>
+
+
 </resources>
