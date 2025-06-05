@@ -5,17 +5,36 @@
 
     <!-- Log in Activity -->
 
+    <!-- Text Log In-->
+    <string name="text_login">Faça o seu Login</string>
+
     <!-- Text Input E-mail -->
     <string name="text_input_email">Digite seu e-mail</string>
     <!-- Text Input Password -->
     <string name="text_input_password">Digite sua senha</string>
 
+    <!-- Tex Sign Up -->
+    <string name="text_not_have_account">Ainda não tem uma conta?</string>
+    <string name="text_login_sign_up">Cadastre-se</string>
+
     <!-- Button Log in -->
     <string name="btn_login">Log in</string>
 
-    <!-- Tex Sign Up -->
-    <string name="text_not_have_account">Ainda não tem uma conta?</string>
-    <string name="text_sign_up">Cadastre-se</string>
+
+    <!-- Sign Up Activity -->
+
+    <!-- Text Sign Up-->
+    <string name="text_sign_up">Faça o seu Cadastro</string>
+
+    <!-- Text Input Name -->
+    <string name="text_sign_up_input_name">Digite seu nome</string>
+    <!-- Text Input E-mail -->
+    <string name="text_sign_up_input_email">Digite seu e-mail</string>
+    <!-- Text Input Password -->
+    <string name="text_sign_up_input_password">Digite sua senha</string>
+
+    <!-- Button Sign Up -->
+    <string name="btn_sign_up">Cadastre-se</string>
 
 
 </resources>
