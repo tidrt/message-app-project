@@ -1,2 +1,2 @@
-# message-app-project
+# message-app-project - In Development...
 A message app project to test and use knowledges in Kotlin and Firebase
