@@ -18,27 +18,29 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
+        android:id="@+id/txtInputNameContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/textView">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_person_24"
             android:drawablePadding="10dp"
             android:hint="@string/text_sign_up_input_name"
             android:inputType="text|textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout2"
+        android:id="@+id/txtInputEmailContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -46,9 +48,10 @@
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+        app:layout_constraintTop_toBottomOf="@+id/txtInputNameContainer">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_email_24"
@@ -58,7 +61,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout5"
+        android:id="@+id/txtInputPasswordContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -67,17 +70,20 @@
         app:endIconMode="password_toggle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/txtInputEmailContainer">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_lock_24"
+            android:drawablePadding="10dp"
             android:hint="@string/text_sign_up_input_password"
             android:inputType="text|textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnSignUp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -87,14 +93,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5" />
+        app:layout_constraintTop_toBottomOf="@+id/txtInputPasswordContainer" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="220dp"
         android:text="@string/text_sign_up"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
