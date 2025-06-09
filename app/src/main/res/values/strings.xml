@@ -35,6 +35,7 @@
 
     <!-- Button Sign Up -->
     <string name="btn_sign_up">Cadastre-se</string>
+    <string name="welcome">Bem vindo</string>
 
 
 </resources>
