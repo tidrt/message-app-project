@@ -7,11 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.messageapp.databinding.ActivityRegisterBinding
+import com.example.messageapp.model.User
 import com.example.messageapp.utils.showMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.firestore.FirebaseFirestore
 
 class RegisterActivity : AppCompatActivity() {
     private val binding by lazy {
@@ -20,6 +22,10 @@ class RegisterActivity : AppCompatActivity() {
 
     private val auth by lazy {
         FirebaseAuth.getInstance()
+    }
+
+    private val firestore by lazy {
+        FirebaseFirestore.getInstance()
     }
 
     private lateinit var name : String
@@ -84,9 +90,12 @@ class RegisterActivity : AppCompatActivity() {
         ).addOnCompleteListener { result ->
             if (result.isSuccessful) {
                 showMessage("Cadastro realizado com sucesso")
-                startActivity(
-                    Intent(applicationContext, MainActivity::class.java)
-                )
+
+                val userId = result.result.user?.uid
+                if(userId != null){
+                    val user = User(userId, name, email)
+                    saveUserOnFirebase(user)
+                }
             }
         }.addOnFailureListener { exception ->
             try {
@@ -102,6 +111,22 @@ class RegisterActivity : AppCompatActivity() {
                 showMessage("E-mail inválido, digite outro e-mail")
             }
         }
+    }
+
+    private fun saveUserOnFirebase(user: User) {
+        firestore
+            .collection("users")
+            .document(user.id)
+            .set(user)
+            .addOnSuccessListener {
+                startActivity(
+                    Intent(applicationContext, MainActivity::class.java)
+                )
+                showMessage("Sucesso ao salvar seus dados")
+            }
+            .addOnFailureListener {
+                showMessage("Erro ao salvar seus dados!")
+            }
     }
 
     private fun initializeToolbar() {
