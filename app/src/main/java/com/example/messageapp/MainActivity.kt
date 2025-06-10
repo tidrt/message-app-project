@@ -1,8 +1,14 @@
 package com.example.messageapp
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.messageapp.databinding.ActivityMainBinding
@@ -27,7 +33,36 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        initializeToolbar()
         initializeOnClickEvents()
+    }
+
+    private fun initializeToolbar() {
+        val toolbar = binding.includeTb.tbRegister
+        setSupportActionBar(toolbar)
+        supportActionBar.apply {
+            title = "WhatsApp"
+        }
+
+        addMenuProvider(
+            object : MenuProvider{
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.principal_menu, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    when(menuItem.itemId){
+                        R.id.item_profile ->
+                            startActivity(
+                                Intent(applicationContext, ProfileActivity::class.java)
+                            )
+                        R.id.item_logout ->
+                            userSignOut()
+                    }
+                    return true
+                }
+            }
+        )
     }
 
     private fun initializeOnClickEvents() {
@@ -37,7 +72,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun userSignOut() {
-        auth.signOut()
-        finish()
+        AlertDialog.Builder(this)
+            .setTitle("Logout")
+            .setMessage("Você deseja mesmo deslogar?")
+            .setPositiveButton("Sim"){ _, _ ->
+                auth.signOut()
+                startActivity(
+                    Intent(applicationContext, LoginActivity::class.java)
+                )
+            }
+            .setNegativeButton("Não"){_, _ -> }
+            .create()
+            .show()
     }
 }

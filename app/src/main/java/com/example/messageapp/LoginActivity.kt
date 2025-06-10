@@ -9,6 +9,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.messageapp.databinding.ActivityLoginBinding
 import com.example.messageapp.utils.showMessage
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 
 class LoginActivity : AppCompatActivity() {
     private val binding by lazy {
@@ -67,16 +69,16 @@ class LoginActivity : AppCompatActivity() {
         password = binding.editTextLoginPassword.text.toString()
 
         if(email.isNotEmpty()){
-            binding.editTextLoginEmail.error = null
+            binding.txtInputLoginEmailContainer.error = null
             if(password.isNotEmpty()){
-                binding.editTextLoginPassword.error = null
+                binding.txtInputLoginPasswordContainer.error = null
                 return true
             } else {
-                binding.editTextLoginPassword.error = "Preencha sua senha"
+                binding.txtInputLoginPasswordContainer.error = "Preencha sua senha"
                 return false
             }
         } else {
-            binding.editTextLoginEmail.error = "Preencha seu e-mail"
+            binding.txtInputLoginEmailContainer.error = "Preencha seu e-mail"
             return false
         }
     }
@@ -93,8 +95,14 @@ class LoginActivity : AppCompatActivity() {
                 )
                 showMessage("Login realizado com sucesso")
             }
-            .addOnFailureListener{
-                showMessage("Falha ao realizar o seu login")
+            .addOnFailureListener{ erro ->
+                try {
+                    throw erro
+                } catch (errorInvalidEmail : FirebaseAuthInvalidUserException){
+                    showMessage("E-mail não cadastrado!")
+                } catch (errorInvalidCredentials : FirebaseAuthInvalidCredentialsException){
+                    showMessage("E-mail ou senha incorreto!")
+                }
             }
     }
 }

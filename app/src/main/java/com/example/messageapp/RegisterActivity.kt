@@ -61,24 +61,24 @@ class RegisterActivity : AppCompatActivity() {
         password = binding.editTextPassword.text.toString()
 
         if(name.isNotEmpty()){
-            binding.editTextName.error = null
+            binding.txtInputNameContainer.error = null
 
             if(email.isNotEmpty()){
-                binding.editTextEmail.error = null
+                binding.txtInputEmailContainer.error = null
 
                 if(password.isNotEmpty()){
-                    binding.editTextPassword.error = null
+                    binding.txtInputPasswordContainer.error = null
                     return true
                 } else {
-                    binding.editTextPassword.error = "Digite sua senha"
+                    binding.txtInputPasswordContainer.error = "Digite sua senha"
                     return false
                 }
             } else {
-                binding.editTextEmail.error = "Preencha seu e-mail"
+                binding.txtInputEmailContainer.error = "Preencha seu e-mail"
                 return false
             }
         } else {
-            binding.editTextName.error = "Preencha seu nome"
+            binding.txtInputNameContainer.error = "Preencha seu nome"
             return false
         }
     }
