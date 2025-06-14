@@ -11,7 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.messageapp.adapters.ViewPagerAdapter
 import com.example.messageapp.databinding.ActivityMainBinding
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
@@ -34,7 +36,23 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         initializeToolbar()
-        initializeOnClickEvents()
+        initializeTabNavigation()
+    }
+
+    private fun initializeTabNavigation() {
+        val tabLayout = binding.tabLayoutMain
+        val viewPager = binding.viewPagerMain
+
+        val tabs = listOf(
+            "Conversas", "Contatos"
+        )
+
+        tabLayout.isTabIndicatorFullWidth = true
+        viewPager.adapter = ViewPagerAdapter(tabs, lifecycle, supportFragmentManager)
+
+        TabLayoutMediator(tabLayout, viewPager){tab, position ->
+            tab.text = tabs[position]
+        }.attach()
     }
 
     private fun initializeToolbar() {
@@ -63,12 +81,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
-    }
-
-    private fun initializeOnClickEvents() {
-        binding.btnLogOut.setOnClickListener{
-            userSignOut()
-        }
     }
 
     private fun userSignOut() {
