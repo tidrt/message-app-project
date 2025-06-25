@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.messageapp.databinding.ActivityProfileBinding
+import com.example.messageapp.utils.showMessage
 
 class ProfileActivity : AppCompatActivity() {
     private val binding by lazy{
@@ -19,6 +20,12 @@ class ProfileActivity : AppCompatActivity() {
 
     private var camPermission = false
     private var galleryPermission = false
+
+    private val galleryManager = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ){uri ->
+        binding.imgProfile.setImageURI(uri)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +38,14 @@ class ProfileActivity : AppCompatActivity() {
         }
         initializeToolbar()
         checkPermissions()
+        binding.fabEditImageProfile.setOnClickListener {
+            if(galleryPermission){
+                galleryManager.launch("image/*")
+            } else {
+                showMessage("Você não tem permissão para acessar a Galeria")
+                checkPermissions()
+            }
+        }
     }
 
     private fun checkPermissions() {
