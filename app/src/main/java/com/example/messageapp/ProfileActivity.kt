@@ -2,6 +2,7 @@ package com.example.messageapp
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
@@ -12,10 +13,21 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.messageapp.databinding.ActivityProfileBinding
 import com.example.messageapp.utils.showMessage
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class ProfileActivity : AppCompatActivity() {
     private val binding by lazy{
         ActivityProfileBinding.inflate(layoutInflater)
+    }
+
+    private val auth by lazy {
+        FirebaseAuth.getInstance()
+    }
+
+    private val storage by lazy {
+        FirebaseStorage.getInstance()
     }
 
     private var camPermission = false
@@ -25,6 +37,27 @@ class ProfileActivity : AppCompatActivity() {
         ActivityResultContracts.GetContent()
     ){uri ->
         binding.imgProfile.setImageURI(uri)
+        saveProfileImageOnStorage(uri)
+    }
+
+    private fun saveProfileImageOnStorage(uri: Uri?){
+        val userId = auth.currentUser?.uid
+
+        if(uri != null){
+            if(userId != null){
+                storage
+                    .getReference("photos")
+                    .child("users")
+                    .child(userId)
+                    .child("profile.jpg")
+                    .putFile(uri)
+                    .addOnSuccessListener {
+                        showMessage("Sucesso ao fazer o Upload da imagem ao Storage")
+                    }.addOnFailureListener {
+                        showMessage("Falha ao fazer o Upload da imagem ao Storage")
+                    }
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +71,10 @@ class ProfileActivity : AppCompatActivity() {
         }
         initializeToolbar()
         checkPermissions()
+        initializeClickEvents()
+    }
+
+    private fun initializeClickEvents() {
         binding.fabEditImageProfile.setOnClickListener {
             if(galleryPermission){
                 galleryManager.launch("image/*")
@@ -45,6 +82,15 @@ class ProfileActivity : AppCompatActivity() {
                 showMessage("Você não tem permissão para acessar a Galeria")
                 checkPermissions()
             }
+        }
+    }
+
+    private fun initializeToolbar() {
+        val toolbar = binding.includeTbProfile.tbRegister
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            title = "Perfil"
+            setDisplayHomeAsUpEnabled(true)
         }
     }
 
@@ -74,15 +120,6 @@ class ProfileActivity : AppCompatActivity() {
                 camPermission = permission[Manifest.permission.CAMERA] ?: camPermission
                 galleryPermission = permission[Manifest.permission.READ_EXTERNAL_STORAGE] ?: galleryPermission
             }.launch(deniedPermissions.toTypedArray())
-        }
-    }
-
-    private fun initializeToolbar() {
-        val toolbar = binding.includeTbProfile.tbRegister
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            title = "Perfil"
-            setDisplayHomeAsUpEnabled(true)
         }
     }
 }
