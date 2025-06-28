@@ -47,6 +47,7 @@
     <string name="edit_button">Botão para editar foto de perfil</string>
     <string name="save_button">Salvar</string>
     <string name="edit_text_your_name">Digite seu nome</string>
+    <string name="profile_name">Nome:</string>
 
 
 </resources>

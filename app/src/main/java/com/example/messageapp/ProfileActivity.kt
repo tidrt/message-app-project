@@ -103,15 +103,27 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun initializeClickEvents() {
-        val userName = auth.currentUser?.displayName
-        binding.editTextNameProfile.hint
-
         binding.fabEditImageProfile.setOnClickListener {
             if(galleryPermission){
                 galleryManager.launch("image/*")
             } else {
                 showMessage("Você não tem permissão para acessar a Galeria")
                 checkPermissions()
+            }
+        }
+
+        binding.btnSaveProfile.setOnClickListener {
+            val userName = binding.editTextNameProfile.text.toString()
+            if(userName.isNotEmpty()){
+                val userId = auth.currentUser?.uid
+                if(userId != null){
+                    val data = mapOf(
+                        "name" to userName
+                    )
+                    updateProfile(userId, data)
+                }
+            } else {
+                showMessage("Campo nome não pode estar vazio")
             }
         }
     }
