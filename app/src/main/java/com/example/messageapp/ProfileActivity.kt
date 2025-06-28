@@ -3,6 +3,7 @@ package com.example.messageapp
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResult
@@ -30,6 +31,10 @@ class ProfileActivity : AppCompatActivity() {
         FirebaseStorage.getInstance()
     }
 
+    private val firestore by lazy {
+        FirebaseFirestore.getInstance()
+    }
+
     private var camPermission = false
     private var galleryPermission = false
 
@@ -51,13 +56,36 @@ class ProfileActivity : AppCompatActivity() {
                     .child(userId)
                     .child("profile.jpg")
                     .putFile(uri)
-                    .addOnSuccessListener {
+                    .addOnSuccessListener { taskSnapshot ->
                         showMessage("Sucesso ao fazer o Upload da imagem ao Storage")
+                        taskSnapshot
+                            .metadata
+                            ?.reference
+                            ?.downloadUrl
+                            ?.addOnSuccessListener { url ->
+                                val data = mapOf(
+                                    "photo" to url.toString()
+                                )
+                                updateProfile(userId, data)
+                            }
                     }.addOnFailureListener {
                         showMessage("Falha ao fazer o Upload da imagem ao Storage")
                     }
             }
         }
+    }
+
+    private fun updateProfile(userId: String, data: Map<String, String>) {
+        firestore
+            .collection("users")
+            .document(userId)
+            .update(data)
+            .addOnSuccessListener {
+                showMessage("Sucesso ao alterar a foto de perfil")
+            }
+            .addOnFailureListener {
+                showMessage("Falha ao alterar a foto de perfil")
+            }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,6 +103,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun initializeClickEvents() {
+        val userName = auth.currentUser?.displayName
+        binding.editTextNameProfile.hint
+
         binding.fabEditImageProfile.setOnClickListener {
             if(galleryPermission){
                 galleryManager.launch("image/*")
@@ -100,17 +131,21 @@ class ProfileActivity : AppCompatActivity() {
             Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
 
-        galleryPermission = ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            galleryPermission = ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.READ_MEDIA_IMAGES
+            ) == PackageManager.PERMISSION_GRANTED
+        }
 
         val deniedPermissions = mutableListOf<String>()
         if(!camPermission){
             deniedPermissions.add(Manifest.permission.CAMERA)
         }
         if(!galleryPermission){
-            deniedPermissions.add(Manifest.permission.CAMERA)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                deniedPermissions.add(Manifest.permission.READ_MEDIA_IMAGES)
+            }
         }
 
         if(deniedPermissions.isNotEmpty()){
@@ -118,7 +153,10 @@ class ProfileActivity : AppCompatActivity() {
                 ActivityResultContracts.RequestMultiplePermissions()
             ){ permission ->
                 camPermission = permission[Manifest.permission.CAMERA] ?: camPermission
-                galleryPermission = permission[Manifest.permission.READ_EXTERNAL_STORAGE] ?: galleryPermission
+                galleryPermission = permission[if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    Manifest.permission.READ_MEDIA_IMAGES
+                } else {
+                }] ?: galleryPermission
             }.launch(deniedPermissions.toTypedArray())
         }
     }
