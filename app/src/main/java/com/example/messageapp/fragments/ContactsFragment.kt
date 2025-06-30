@@ -1,16 +1,15 @@
 package com.example.messageapp.fragments
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.messageapp.R
+import androidx.fragment.app.Fragment
 import com.example.messageapp.databinding.FragmentContactsBinding
 import com.example.messageapp.model.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 
 
 class ContactsFragment : Fragment() {
@@ -24,10 +23,12 @@ class ContactsFragment : Fragment() {
         FirebaseFirestore.getInstance()
     }
 
+    private lateinit var snapshotEvent : ListenerRegistration
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentContactsBinding.inflate(
             inflater, container, false
         )
@@ -40,14 +41,18 @@ class ContactsFragment : Fragment() {
     }
 
     private fun contactsListener() {
-        firestore
+        snapshotEvent = firestore
             .collection("users")
-            .addSnapshotListener { querySnapshot, error ->
+            .addSnapshotListener { querySnapshot, _ ->
+                val contacts = mutableListOf<User>()
                 val documents = querySnapshot?.documents
                 documents?.forEach { documentSnapshot ->
                     val user = documentSnapshot.toObject(User::class.java)
                     if(user != null){
-                        Log.i("contact_listener", "nome: ${user.name}")
+                        val actualUser = auth.currentUser?.uid
+                        if(actualUser != null && actualUser != user.id){
+                            contacts.add(user)
+                        }
                     }
                 }
             }
@@ -55,5 +60,6 @@ class ContactsFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        snapshotEvent.remove()
     }
 }
