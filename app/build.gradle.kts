@@ -58,6 +58,9 @@ dependencies {
     // Storage
     implementation(libs.firebase.storage)
 
+    // Picasso
+    implementation(libs.picasso)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

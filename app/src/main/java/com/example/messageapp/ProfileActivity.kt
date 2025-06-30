@@ -17,6 +17,7 @@ import com.example.messageapp.utils.showMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 
 class ProfileActivity : AppCompatActivity() {
     private val binding by lazy{
@@ -43,6 +44,36 @@ class ProfileActivity : AppCompatActivity() {
     ){uri ->
         binding.imgProfile.setImageURI(uri)
         saveProfileImageOnStorage(uri)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        recoverProfileData()
+    }
+
+    private fun recoverProfileData() {
+        val userId = auth.currentUser?.uid
+        if(userId != null){
+            firestore
+                .collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    val data = documentSnapshot.data
+                    if(data != null){
+                        val name = data["name"] as String
+                        val photo = data["photo"] as String
+
+                        binding.editTextNameProfile.setText(name)
+                        if(photo.isNotEmpty()){
+                            Picasso
+                                .get()
+                                .load(photo)
+                                .into(binding.imgProfile)
+                        }
+                    }
+                }
+        }
     }
 
     private fun saveProfileImageOnStorage(uri: Uri?){
@@ -81,10 +112,10 @@ class ProfileActivity : AppCompatActivity() {
             .document(userId)
             .update(data)
             .addOnSuccessListener {
-                showMessage("Sucesso ao alterar a foto de perfil")
+                showMessage("Sucesso ao editar o perfil")
             }
             .addOnFailureListener {
-                showMessage("Falha ao alterar a foto de perfil")
+                showMessage("Falha ao editar o perfil")
             }
     }
 
