@@ -1,6 +1,6 @@
 package com.example.messageapp.fragments
 
-import android.os.Bundle
+    import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,10 +47,10 @@ class ContactsFragment : Fragment() {
                 val contacts = mutableListOf<User>()
                 val documents = querySnapshot?.documents
                 documents?.forEach { documentSnapshot ->
+                    val actualUser = auth.currentUser?.uid
                     val user = documentSnapshot.toObject(User::class.java)
-                    if(user != null){
-                        val actualUser = auth.currentUser?.uid
-                        if(actualUser != null && actualUser != user.id){
+                    if(user != null && actualUser != null){
+                        if(actualUser != user.id){
                             contacts.add(user)
                         }
                     }
