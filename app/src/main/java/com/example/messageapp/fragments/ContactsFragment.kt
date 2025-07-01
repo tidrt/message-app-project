@@ -1,19 +1,23 @@
 package com.example.messageapp.fragments
 
     import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.example.messageapp.databinding.FragmentContactsBinding
-import com.example.messageapp.model.User
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
+    import android.view.LayoutInflater
+    import android.view.View
+    import android.view.ViewGroup
+    import androidx.fragment.app.Fragment
+    import androidx.recyclerview.widget.DividerItemDecoration
+    import androidx.recyclerview.widget.LinearLayoutManager
+    import com.example.messageapp.adapters.ContactAdapter
+    import com.example.messageapp.databinding.FragmentContactsBinding
+    import com.example.messageapp.model.User
+    import com.google.firebase.auth.FirebaseAuth
+    import com.google.firebase.firestore.FirebaseFirestore
+    import com.google.firebase.firestore.ListenerRegistration
 
 
 class ContactsFragment : Fragment() {
     private lateinit var binding : FragmentContactsBinding
+    private lateinit var contactsAdapter : ContactAdapter
 
     private val auth by lazy {
         FirebaseAuth.getInstance()
@@ -32,6 +36,20 @@ class ContactsFragment : Fragment() {
         binding = FragmentContactsBinding.inflate(
             inflater, container, false
         )
+
+        contactsAdapter = ContactAdapter()
+
+        with(binding){
+            rvContacts.adapter = contactsAdapter
+            rvContacts.layoutManager = LinearLayoutManager(context)
+            rvContacts.addItemDecoration(
+                DividerItemDecoration(
+                    context,
+                    LinearLayoutManager.VERTICAL
+                )
+            )
+        }
+
         return binding.root
     }
 
@@ -54,6 +72,9 @@ class ContactsFragment : Fragment() {
                             contacts.add(user)
                         }
                     }
+                }
+                if (contacts.isNotEmpty()) {
+                    contactsAdapter.addList(contacts)
                 }
             }
     }
