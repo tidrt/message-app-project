@@ -1,4 +1,4 @@
-package com.example.messageapp
+package com.example.messageapp.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.messageapp.R
 import com.example.messageapp.adapters.ViewPagerAdapter
 import com.example.messageapp.databinding.ActivityMainBinding
 import com.google.android.material.tabs.TabLayoutMediator

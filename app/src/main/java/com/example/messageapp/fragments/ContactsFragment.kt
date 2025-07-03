@@ -1,5 +1,6 @@
 package com.example.messageapp.fragments
 
+    import android.content.Intent
     import android.os.Bundle
     import android.view.LayoutInflater
     import android.view.View
@@ -7,9 +8,11 @@ package com.example.messageapp.fragments
     import androidx.fragment.app.Fragment
     import androidx.recyclerview.widget.DividerItemDecoration
     import androidx.recyclerview.widget.LinearLayoutManager
+    import com.example.messageapp.activities.MessageActivity
     import com.example.messageapp.adapters.ContactAdapter
     import com.example.messageapp.databinding.FragmentContactsBinding
     import com.example.messageapp.model.User
+    import com.example.messageapp.utils.Constants
     import com.google.firebase.auth.FirebaseAuth
     import com.google.firebase.firestore.FirebaseFirestore
     import com.google.firebase.firestore.ListenerRegistration
@@ -37,7 +40,12 @@ class ContactsFragment : Fragment() {
             inflater, container, false
         )
 
-        contactsAdapter = ContactAdapter()
+        contactsAdapter = ContactAdapter { user ->
+            val intent = Intent(context, MessageActivity::class.java)
+            intent.putExtra("recipientData", user)
+            intent.putExtra("source", Constants.SOURCE_CONTACT)
+            startActivity(intent)
+        }
 
         with(binding){
             rvContacts.adapter = contactsAdapter

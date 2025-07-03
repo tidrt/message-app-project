@@ -1,4 +1,4 @@
-package com.example.messageapp
+package com.example.messageapp.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.messageapp.R
 import com.example.messageapp.databinding.ActivityLoginBinding
 import com.example.messageapp.utils.showMessage
 import com.google.firebase.auth.FirebaseAuth

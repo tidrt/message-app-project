@@ -8,7 +8,9 @@ import com.example.messageapp.databinding.ContactCardViewBinding
 import com.example.messageapp.model.User
 import com.squareup.picasso.Picasso
 
-class ContactAdapter : RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
+class ContactAdapter(
+    private val onClick : (User) -> Unit
+) : RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() {
     private var contactsList = emptyList<User>()
 
     fun addList(list: List<User>){
@@ -23,6 +25,10 @@ class ContactAdapter : RecyclerView.Adapter<ContactAdapter.ContactViewHolder>() 
                 .get()
                 .load(user.photo)
                 .into(binding.imgProfileCardView)
+            // click events
+            binding.clCardContact.setOnClickListener {
+                onClick(user)
+            }
         }
     }
 

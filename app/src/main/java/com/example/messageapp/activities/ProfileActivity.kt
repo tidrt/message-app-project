@@ -1,4 +1,4 @@
-package com.example.messageapp
+package com.example.messageapp.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -6,12 +6,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.messageapp.R
 import com.example.messageapp.databinding.ActivityProfileBinding
 import com.example.messageapp.utils.showMessage
 import com.google.firebase.auth.FirebaseAuth
