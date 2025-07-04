@@ -2,6 +2,7 @@ package com.example.messageapp.activities
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,6 +15,8 @@ import com.example.messageapp.utils.Constants
 import com.example.messageapp.utils.showMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.squareup.picasso.Picasso
 import java.util.Date
 
@@ -31,7 +34,42 @@ class MessageActivity : AppCompatActivity() {
         FirebaseFirestore.getInstance()
     }
 
+    private lateinit var listenerRegistration: ListenerRegistration
     private var recipientData : User? = null
+
+    override fun onStart() {
+        super.onStart()
+        initializeListeners()
+    }
+
+    private fun initializeListeners() {
+        val senderId = auth.currentUser?.uid
+        val receiverId = recipientData?.id
+
+        if(senderId != null && receiverId != null){
+            listenerRegistration = firestore.collection(Constants.DB_MESSAGES)
+                .document(senderId)
+                .collection(receiverId)
+                .orderBy("date", Query.Direction.ASCENDING)
+                .addSnapshotListener { querySnapshot, error ->
+                    if(error != null){
+                        showMessage("Erro ao carregar mensagens!")
+                    }
+
+                    val messageList = mutableListOf<Message>()
+                    val documents = querySnapshot?.documents
+                    documents?.forEach { documentSnapshot ->
+                        val message = documentSnapshot.toObject(Message::class.java)
+                        if(message != null){
+                            messageList.add(message)
+                            Log.i("info_messages", message.message)
+                        }
+                    }
+
+                    // message list
+                }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,5 +156,10 @@ class MessageActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        listenerRegistration.remove()
     }
 }
