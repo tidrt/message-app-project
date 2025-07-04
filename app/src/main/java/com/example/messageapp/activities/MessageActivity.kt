@@ -8,14 +8,27 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.messageapp.R
 import com.example.messageapp.databinding.ActivityMessageBinding
+import com.example.messageapp.model.Message
 import com.example.messageapp.model.User
 import com.example.messageapp.utils.Constants
+import com.example.messageapp.utils.showMessage
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
+import java.util.Date
 
 class MessageActivity : AppCompatActivity() {
 
     private val binding by lazy {
         ActivityMessageBinding.inflate(layoutInflater)
+    }
+
+    private val auth by lazy {
+        FirebaseAuth.getInstance()
+    }
+
+    private val firestore by lazy {
+        FirebaseFirestore.getInstance()
     }
 
     private var recipientData : User? = null
@@ -31,6 +44,48 @@ class MessageActivity : AppCompatActivity() {
         }
         recoverRecipientData()
         initializeToolbar()
+        initializeClickEvents()
+    }
+
+    private fun initializeClickEvents() {
+        with(binding){
+            fabSend.setOnClickListener {
+                val message = editMessage.text.toString()
+                saveMessage(message)
+                editMessage.setText("")
+            }
+        }
+    }
+
+    private fun saveMessage(textMessage: String) {
+        if (textMessage.isNotEmpty()) {
+            val senderId = auth.currentUser?.uid
+            val receiverId = recipientData?.id
+
+            if(senderId != null && receiverId != null){
+                val message = Message(
+                    senderId,
+                    textMessage
+                )
+
+                // from sender perspective
+                saveMassageDb(senderId, receiverId, message)
+
+                // from receiver perspective
+                saveMassageDb(receiverId, senderId, message)
+            }
+        }
+    }
+
+    private fun saveMassageDb(senderId: String, receiverId: String, message: Message) {
+        firestore
+            .collection("messages")
+            .document(senderId)
+            .collection(receiverId)
+            .add(message)
+            .addOnFailureListener {
+                showMessage("Falha ao enviar mensagem")
+            }
     }
 
     private fun initializeToolbar() {

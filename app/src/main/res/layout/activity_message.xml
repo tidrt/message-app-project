@@ -45,6 +45,7 @@
         app:layout_constraintTop_toTopOf="@+id/imgMessageRecipientProfilePhoto" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMessages"
         android:layout_width="409dp"
         android:layout_height="742dp"
         android:layout_marginStart="8dp"
@@ -58,7 +59,7 @@
         app:layout_constraintTop_toBottomOf="@+id/mtMessageToolbar" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/fabSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -82,10 +83,11 @@
         app:boxBackgroundColor="@color/grey"
         app:boxBackgroundMode="none"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+        app:layout_constraintEnd_toStartOf="@+id/fabSend"
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/grey"
