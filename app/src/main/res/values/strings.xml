@@ -48,6 +48,7 @@
     <string name="save_button">Salvar</string>
     <string name="edit_text_your_name">Digite seu nome</string>
     <string name="profile_name">Nome:</string>
+    <string name="send_button_description">Botão de Enviar</string>
 
 
 </resources>
