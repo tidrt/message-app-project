@@ -13,6 +13,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.messageapp.R
 import com.example.messageapp.databinding.ActivityProfileBinding
+import com.example.messageapp.utils.Constants
 import com.example.messageapp.utils.showMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -55,7 +56,7 @@ class ProfileActivity : AppCompatActivity() {
         val userId = auth.currentUser?.uid
         if(userId != null){
             firestore
-                .collection("users")
+                .collection(Constants.DB_USERS)
                 .document(userId)
                 .get()
                 .addOnSuccessListener { documentSnapshot ->

@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.messageapp.R
 import com.example.messageapp.databinding.ActivityRegisterBinding
 import com.example.messageapp.model.User
+import com.example.messageapp.utils.Constants
 import com.example.messageapp.utils.showMessage
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -116,7 +117,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun saveUserOnFirebase(user: User) {
         firestore
-            .collection("users")
+            .collection(Constants.DB_USERS)
             .document(user.id)
             .set(user)
             .addOnSuccessListener {

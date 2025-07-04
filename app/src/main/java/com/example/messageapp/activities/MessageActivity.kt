@@ -79,7 +79,7 @@ class MessageActivity : AppCompatActivity() {
 
     private fun saveMassageDb(senderId: String, receiverId: String, message: Message) {
         firestore
-            .collection("messages")
+            .collection(Constants.DB_MESSAGES)
             .document(senderId)
             .collection(receiverId)
             .add(message)

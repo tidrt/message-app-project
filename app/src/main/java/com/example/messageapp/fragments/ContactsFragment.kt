@@ -68,7 +68,7 @@ class ContactsFragment : Fragment() {
 
     private fun contactsListener() {
         snapshotEvent = firestore
-            .collection("users")
+            .collection(Constants.DB_USERS)
             .addSnapshotListener { querySnapshot, _ ->
                 val contacts = mutableListOf<User>()
                 val documents = querySnapshot?.documents
