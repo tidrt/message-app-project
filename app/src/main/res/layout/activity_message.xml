@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="TextView"
+        android:text="Nome Composto"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -56,7 +56,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mtMessageToolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/mtMessageToolbar"
+        tools:listitem="@layout/item_message_sender" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabSend"
