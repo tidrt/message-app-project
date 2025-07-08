@@ -6,4 +6,7 @@ object Constants {
 
     const val DB_USERS = "users"
     const val DB_MESSAGES = "messages"
+
+    const val TYPE_SENDER = 0
+    const val TYPE_RECEIVER = 1
 }

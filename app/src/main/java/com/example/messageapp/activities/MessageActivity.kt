@@ -7,12 +7,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.messageapp.R
+import com.example.messageapp.adapters.ContactAdapter
+import com.example.messageapp.adapters.MessageAdapter
 import com.example.messageapp.databinding.ActivityMessageBinding
 import com.example.messageapp.model.Message
 import com.example.messageapp.model.User
 import com.example.messageapp.utils.Constants
 import com.example.messageapp.utils.showMessage
+import com.google.api.Distribution.BucketOptions.Linear
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -35,12 +39,8 @@ class MessageActivity : AppCompatActivity() {
     }
 
     private lateinit var listenerRegistration: ListenerRegistration
+    private lateinit var messagesAdapter : MessageAdapter
     private var recipientData : User? = null
-
-    override fun onStart() {
-        super.onStart()
-        initializeListeners()
-    }
 
     private fun initializeListeners() {
         val senderId = auth.currentUser?.uid
@@ -66,7 +66,9 @@ class MessageActivity : AppCompatActivity() {
                         }
                     }
 
-                    // message list
+                    if(messageList.isNotEmpty()){
+                        messagesAdapter.addList(messageList)
+                    }
                 }
         }
     }
@@ -81,8 +83,18 @@ class MessageActivity : AppCompatActivity() {
             insets
         }
         recoverRecipientData()
+        initializeListeners()
         initializeToolbar()
         initializeClickEvents()
+        initializeViewHolder()
+    }
+
+    private fun initializeViewHolder() {
+        with(binding){
+            messagesAdapter = MessageAdapter()
+            rvMessages.adapter = messagesAdapter
+            rvMessages.layoutManager = LinearLayoutManager(applicationContext)
+        }
     }
 
     private fun initializeClickEvents() {
