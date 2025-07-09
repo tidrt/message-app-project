@@ -12,6 +12,7 @@ import com.example.messageapp.R
 import com.example.messageapp.adapters.ContactAdapter
 import com.example.messageapp.adapters.MessageAdapter
 import com.example.messageapp.databinding.ActivityMessageBinding
+import com.example.messageapp.model.Chat
 import com.example.messageapp.model.Message
 import com.example.messageapp.model.User
 import com.example.messageapp.utils.Constants
@@ -40,11 +41,12 @@ class MessageActivity : AppCompatActivity() {
 
     private lateinit var listenerRegistration: ListenerRegistration
     private lateinit var messagesAdapter : MessageAdapter
-    private var recipientData : User? = null
+    private var senderData : User? = null
+    private var receiverData : User? = null
 
     private fun initializeListeners() {
         val senderId = auth.currentUser?.uid
-        val receiverId = recipientData?.id
+        val receiverId = receiverData?.id
 
         if(senderId != null && receiverId != null){
             listenerRegistration = firestore.collection(Constants.DB_MESSAGES)
@@ -82,7 +84,7 @@ class MessageActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        recoverRecipientData()
+        recoverUserData()
         initializeListeners()
         initializeToolbar()
         initializeClickEvents()
@@ -110,7 +112,7 @@ class MessageActivity : AppCompatActivity() {
     private fun saveMessage(textMessage: String) {
         if (textMessage.isNotEmpty()) {
             val senderId = auth.currentUser?.uid
-            val receiverId = recipientData?.id
+            val receiverId = receiverData?.id
 
             if(senderId != null && receiverId != null){
                 val message = Message(
@@ -119,12 +121,42 @@ class MessageActivity : AppCompatActivity() {
                 )
 
                 // from sender perspective
+                // receiver chat -> photo and name (receiver)
                 saveMassageDb(senderId, receiverId, message)
+                val senderChat = Chat(
+                    senderId,
+                    receiverId,
+                    receiverData!!.name,
+                    receiverData!!.photo,
+                    textMessage
+                )
+                saveChatDb(senderChat)
 
                 // from receiver perspective
+                // receiver chat -> photo and name (sender)
                 saveMassageDb(receiverId, senderId, message)
+                val receiverChat = Chat(
+                    receiverId,
+                    senderId,
+                    senderData!!.name,
+                    senderData!!.photo,
+                    textMessage
+                )
+                saveChatDb(receiverChat)
             }
         }
+    }
+
+    private fun saveChatDb(chat: Chat) {
+        firestore
+            .collection(Constants.DB_CHAT)
+            .document(chat.idSender)
+            .collection(Constants.DB_LAST_CHATS)
+            .document(chat.idReceiver)
+            .set(chat)
+            .addOnFailureListener {
+                showMessage("Erro ao salvar conversa!")
+            }
     }
 
     private fun saveMassageDb(senderId: String, receiverId: String, message: Message) {
@@ -143,26 +175,41 @@ class MessageActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
             title = ""
-            if(recipientData != null){
+            if(receiverData != null){
                 Picasso.get()
-                    .load(recipientData!!.photo)
+                    .load(receiverData!!.photo)
                     .into(binding.imgMessageRecipientProfilePhoto)
 
-                binding.txtMessageRecipientProfileName.text = recipientData!!.name
+                binding.txtMessageRecipientProfileName.text = receiverData!!.name
             }
             setDisplayHomeAsUpEnabled(true)
         }
     }
 
-    private fun recoverRecipientData() {
+    private fun recoverUserData() {
+        val senderId = auth.currentUser?.uid
+
+        if(senderId != null){
+            firestore
+                .collection(Constants.DB_USERS)
+                .document(senderId)
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    val user = documentSnapshot.toObject(User::class.java)
+                    if(user != null){
+                        senderData = user
+                    }
+                }
+        }
+
         val extras = intent.extras
         if(extras != null){
             val source = extras.getString("source")
             if(source == Constants.SOURCE_CONTACT){
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    recipientData = extras.getParcelable("recipientData", User::class.java)
+                    receiverData = extras.getParcelable("recipientData", User::class.java)
                 } else {
-                    recipientData = extras.getParcelable("recipientData")
+                    receiverData = extras.getParcelable("recipientData")
                 }
             } else if(source == Constants.SOURCE_CHAT){
 
