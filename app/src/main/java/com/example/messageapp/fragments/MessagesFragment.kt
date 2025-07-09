@@ -69,7 +69,7 @@ class MessagesFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        snapshotEvent.remove()  
+        snapshotEvent.remove()
     }
 
 }

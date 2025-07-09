@@ -28,3 +28,6 @@ replay_pid*
 
 # Google Services
 google-services.json
+
+# Build Errors
+build
