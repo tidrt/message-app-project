@@ -204,15 +204,10 @@ class MessageActivity : AppCompatActivity() {
 
         val extras = intent.extras
         if(extras != null){
-            val source = extras.getString("source")
-            if(source == Constants.SOURCE_CONTACT){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    receiverData = extras.getParcelable("recipientData", User::class.java)
-                } else {
-                    receiverData = extras.getParcelable("recipientData")
-                }
-            } else if(source == Constants.SOURCE_CHAT){
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                receiverData = extras.getParcelable("recipientData", User::class.java)
+            } else {
+                receiverData = extras.getParcelable("recipientData")
             }
         }
     }
